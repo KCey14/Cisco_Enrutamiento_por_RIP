@@ -1,0 +1,88 @@
+1-Establecer los nombres de los router (reemplazar X por el router correspondiente)
+hostname RX
+
+2-Establecer las IP en los puertos de cada Router
+En RA
+interface gig0/0
+description Interfaz de Red A
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+interface gig0/1
+description Interfaz de Red B
+ip address 192.168.2.1 255.255.255.0
+no shutdown
+exit
+interface se0/0/0
+description Interfaz de Red D
+ip address 10.0.0.5 255.255.255.252
+no shutdown 
+exit
+interface se0/0/1
+description Interfaz de Red E
+ip address 10.0.0.9 255.255.255.252
+no shutdown
+exit
+
+En RB
+interface gig0/0
+description Interfaz de Red C
+ip address 172.16.2.1 255.255.255.0
+no shutdown
+exit
+interface se0/0/0
+description Interfaz de Red D
+ip address 10.0.0.6 255.255.255.252
+no shutdown 
+exit
+interface se0/0/1
+description Interfaz de Red F
+ip address 10.0.0.1 255.255.255.252
+no shutdown 
+exit
+
+En RC
+interface se0/0/1
+description Interfaz para Red E
+ip address 10.0.0.10 255.255.255.252
+no shutdown
+exit
+interface se0/0/0
+description Interfaz para Red F
+ip address 10.0.0.2 255.255.255.252
+no shutdown
+exit
+interface gi0/0
+description Interfaz para ISP
+ip address 172.16.4.1 255.255.255.0
+no shutdown
+exit
+
+3-Crear ruta por defecto en RC
+ip route 0.0.0.0 0.0.0.0 172.16.4.2
+
+4-Implementar el protocolo RIP 
+En RC
+router rip
+version 2
+no auto-summary
+network 10.0.0.8
+network 10.0.0.0
+redistribute static
+
+En RA
+router rip
+version 2
+no auto-summary
+network 10.0.0.8
+network 10.0.0.4
+network 192.168.1.0
+network 192.168.2.0
+
+En RB
+router rip
+version 2
+no auto-summary
+network 10.0.0.0
+network 10.0.0.4
+network 172.16.2.0
